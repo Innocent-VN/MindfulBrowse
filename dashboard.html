@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MindfulBrowse — Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #080a0f;
+            --surface: #0f1219;
+            --surface2: #141820;
+            --border: #1c2333;
+            --border2: #242d40;
+            --green: #a8f0c6;
+            --green-dim: rgba(168, 240, 198, 0.08);
+            --green-mid: rgba(168, 240, 198, 0.15);
+            --blue: #5b9cf6;
+            --blue-dim: rgba(91, 156, 246, 0.08);
+            --red: #ff6b6b;
+            --red-dim: rgba(255, 107, 107, 0.08);
+            --yellow: #f0c86a;
+            --yellow-dim: rgba(240, 200, 106, 0.08);
+            --text: #e8eaf0;
+            --text2: #8892a4;
+            --text3: #4a5568;
+            --mono: 'DM Mono', monospace;
+            --sans: 'Outfit', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--sans);
+            min-height: 100vh;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(168, 240, 198, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(168, 240, 198, 0.02) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-glow {
+            position: fixed;
+            top: -200px;
+            right: -200px;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(91, 156, 246, 0.04) 0%, transparent 65%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px 60px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 36px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-left h1 {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--green);
+            letter-spacing: -0.5px;
+        }
+
+        .header-left p {
+            font-size: 12px;
+            color: var(--text3);
+            font-family: var(--mono);
+            margin-top: 4px;
+        }
+
+        .back-btn {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            color: var(--text2);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: var(--sans);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .back-btn:hover {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px 20px;
+            animation: fadeUp 0.4s ease both;
+        }
+
+        .stat-card:nth-child(2) {
+            animation-delay: 0.05s;
+        }
+
+        .stat-card:nth-child(3) {
+            animation-delay: 0.10s;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            font-family: var(--mono);
+            color: var(--text3);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--green);
+            line-height: 1;
+        }
+
+        .stat-sub {
+            font-size: 11px;
+            color: var(--text3);
+            margin-top: 4px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .grid-full {
+            margin-bottom: 12px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            animation: fadeUp 0.4s ease both;
+        }
+
+        .card-title {
+            font-size: 10px;
+            font-family: var(--mono);
+            color: var(--blue);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .bar-row {
+            display: grid;
+            grid-template-columns: 110px 1fr 52px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bar-domain {
+            font-size: 11px;
+            color: var(--text2);
+            font-family: var(--mono);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .bar-track {
+            background: var(--border);
+            border-radius: 4px;
+            height: 6px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: var(--green);
+            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 0%;
+        }
+
+        .bar-fill.over-limit {
+            background: var(--red);
+        }
+
+        .bar-value {
+            font-size: 11px;
+            font-family: var(--mono);
+            color: var(--text2);
+            text-align: right;
+        }
+
+        .weekly-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 100px;
+            padding-top: 8px;
+        }
+
+        .week-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .week-bar-wrap {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .week-bar {
+            width: 70%;
+            background: var(--blue-dim);
+            border: 1px solid rgba(91, 156, 246, 0.2);
+            border-radius: 4px 4px 0 0;
+            transition: height 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            min-height: 2px;
+            position: relative;
+        }
+
+        .week-bar.today {
+            background: var(--green-mid);
+            border-color: rgba(168, 240, 198, 0.3);
+        }
+
+        .week-bar:hover .week-tooltip {
+            opacity: 1;
+        }
+
+        .week-tooltip {
+            position: absolute;
+            bottom: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 10px;
+            font-family: var(--mono);
+            color: var(--text);
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s;
+            z-index: 10;
+        }
+
+        .week-label {
+            font-size: 9px;
+            font-family: var(--mono);
+            color: var(--text3);
+            text-transform: uppercase;
+        }
+
+        .week-label.today {
+            color: var(--green);
+        }
+
+        .mood-checkin {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .mood-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mood-row-label {
+            font-size: 11px;
+            color: var(--text2);
+            font-weight: 500;
+        }
+
+        .mood-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .mood-btn {
+            flex: 1;
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: 8px;
+            padding: 8px 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            position: relative;
+            z-index: 5;
+            pointer-events: all;
+        }
+
+        .mood-btn:hover {
+            border-color: var(--green);
+            transform: translateY(-1px);
+        }
+
+        .mood-btn.selected {
+            background: var(--green-dim);
+            border-color: var(--green);
+        }
+
+        .mood-btn .emoji {
+            font-size: 18px;
+        }
+
+        .mood-btn .score {
+            font-size: 9px;
+            font-family: var(--mono);
+            color: var(--text3);
+        }
+
+        .mood-saved {
+            font-size: 11px;
+            color: var(--green);
+            font-family: var(--mono);
+            min-height: 16px;
+            text-align: center;
+        }
+
+        .mood-history {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .mood-history::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .mood-history::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .mood-history::-webkit-scrollbar-thumb {
+            background: var(--border2);
+            border-radius: 4px;
+        }
+
+        .mood-entry {
+            display: grid;
+            grid-template-columns: 90px 1fr 40px;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            background: var(--surface2);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 11px;
+        }
+
+        .mood-entry-date {
+            font-family: var(--mono);
+            color: var(--text3);
+            font-size: 10px;
+        }
+
+        .mood-entry-val {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text2);
+        }
+
+        .mood-delta {
+            font-family: var(--mono);
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .mood-delta.positive {
+            background: var(--green-dim);
+            color: var(--green);
+        }
+
+        .mood-delta.negative {
+            background: var(--red-dim);
+            color: var(--red);
+        }
+
+        .mood-delta.neutral {
+            background: var(--yellow-dim);
+            color: var(--yellow);
+        }
+
+        .insight {
+            background: var(--green-dim);
+            border: 1px solid rgba(168, 240, 198, 0.15);
+            border-radius: 10px;
+            padding: 14px 16px;
+            font-size: 12px;
+            color: var(--text2);
+            line-height: 1.6;
+        }
+
+        .insight strong {
+            color: var(--green);
+        }
+
+        .empty-state {
+            font-size: 11px;
+            color: var(--text3);
+            font-family: var(--mono);
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card:last-child {
+                grid-column: span 2;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+
+    <div class="page">
+
+        <div class="header">
+            <div class="header-left">
+                <h1>🌿 MindfulBrowse</h1>
+                <p id="dateLabel"></p>
+            </div>
+            <button class="back-btn" id="closeBtn">✕ Close</button>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Today's Total</div>
+                <div class="stat-value" id="totalToday">—</div>
+                <div class="stat-sub">across all sites</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Current Streak</div>
+                <div class="stat-value" id="streakStat">—</div>
+                <div class="stat-sub">days 🔥</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Sites Visited</div>
+                <div class="stat-value" id="sitesVisited">—</div>
+                <div class="stat-sub" id="limitsStatus">today</div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title">Today's Usage</div>
+                <div class="bar-chart" id="barChart">
+                    <div class="empty-state">No data yet</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">7-Day Trend</div>
+                <div class="weekly-chart" id="weeklyChart"></div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title">Mood Check-In</div>
+                <div class="mood-checkin">
+                    <div class="mood-row">
+                        <div class="mood-row-label">Morning — How do you feel?</div>
+                        <div class="mood-buttons">
+                            <button class="mood-btn" data-type="morning" data-score="1"><span
+                                    class="emoji">😞</span><span class="score">1</span></button>
+                            <button class="mood-btn" data-type="morning" data-score="2"><span
+                                    class="emoji">😕</span><span class="score">2</span></button>
+                            <button class="mood-btn" data-type="morning" data-score="3"><span
+                                    class="emoji">😐</span><span class="score">3</span></button>
+                            <button class="mood-btn" data-type="morning" data-score="4"><span
+                                    class="emoji">🙂</span><span class="score">4</span></button>
+                            <button class="mood-btn" data-type="morning" data-score="5"><span
+                                    class="emoji">😄</span><span class="score">5</span></button>
+                        </div>
+                    </div>
+                    <div class="mood-row">
+                        <div class="mood-row-label">Evening — How do you feel now?</div>
+                        <div class="mood-buttons">
+                            <button class="mood-btn" data-type="evening" data-score="1"><span
+                                    class="emoji">😞</span><span class="score">1</span></button>
+                            <button class="mood-btn" data-type="evening" data-score="2"><span
+                                    class="emoji">😕</span><span class="score">2</span></button>
+                            <button class="mood-btn" data-type="evening" data-score="3"><span
+                                    class="emoji">😐</span><span class="score">3</span></button>
+                            <button class="mood-btn" data-type="evening" data-score="4"><span
+                                    class="emoji">🙂</span><span class="score">4</span></button>
+                            <button class="mood-btn" data-type="evening" data-score="5"><span
+                                    class="emoji">😄</span><span class="score">5</span></button>
+                        </div>
+                    </div>
+                    <div class="mood-saved" id="moodSaved"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Mood History</div>
+                <div class="mood-history" id="moodHistory">
+                    <div class="empty-state">No mood data yet</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-full">
+            <div class="card">
+                <div class="card-title">Browsing Insight</div>
+                <div id="insightText" class="empty-state">Not enough data yet — check back after a few days of mood
+                    tracking.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

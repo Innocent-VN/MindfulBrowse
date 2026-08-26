@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MindfulBrowse — Blocked</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0a0c10;
+            --surface: #111318;
+            --border: #1e2535;
+            --green: #a8f0c6;
+            --green-dim: #2a4a38;
+            --red: #ff6b6b;
+            --red-dim: #3a1a1a;
+            --blue: #4a90d9;
+            --text: #e8eaf0;
+            --muted: #5a6070;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 107, 107, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 107, 107, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        /* Glow */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 107, 107, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .card {
+            position: relative;
+            z-index: 1;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 52px 48px;
+            max-width: 520px;
+            width: 90%;
+            text-align: center;
+            animation: fadeUp 0.5s ease both;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .icon {
+            font-size: 56px;
+            margin-bottom: 20px;
+            display: block;
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.08);
+            }
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--red);
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .domain {
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 20px;
+            padding: 6px 14px;
+            background: var(--red-dim);
+            border-radius: 6px;
+            display: inline-block;
+            border: 1px solid rgba(255, 107, 107, 0.2);
+        }
+
+        p {
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        p strong {
+            color: var(--text);
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 11px 22px;
+            border-radius: 8px;
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-back {
+            background: var(--green);
+            color: #0a0c10;
+        }
+
+        .btn-back:hover {
+            background: #c8ffdf;
+            transform: translateY(-1px);
+        }
+
+        .footer {
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .mode-badge {
+            display: inline-block;
+            font-size: 10px;
+            font-family: 'Space Mono', monospace;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+
+        .mode-focus {
+            background: rgba(74, 144, 217, 0.15);
+            color: var(--blue);
+            border: 1px solid rgba(74, 144, 217, 0.3);
+        }
+
+        .mode-permanent {
+            background: var(--red-dim);
+            color: var(--red);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <span class="icon">🛡️</span>
+        <div id="modeBadge" class="mode-badge mode-focus">FOCUS MODE</div>
+        <h1>Site Blocked</h1>
+        <div class="domain" id="blockedDomain">this site</div>
+        <p id="blockedMessage">
+            You added this site to your <strong>block list</strong>.<br>
+            Stay on track — you've got this.
+        </p>
+        <div class="actions">
+            <button class="btn btn-back" id="goBackBtn">← Go Back</button>
+        </div>
+        <div class="footer">🌿 MindfulBrowse · Browse with intention</div>
+    </div>
+
+    <script>
+        // Read which domain was blocked and why from URL params
+        const params = new URLSearchParams(window.location.search);
+        const domain = params.get("domain") || "this site";
+        const reason = params.get("reason") || "focus"; // "focus" or "permanent"
+
+        document.getElementById("blockedDomain").textContent = domain;
+
+        const badge = document.getElementById("modeBadge");
+        const message = document.getElementById("blockedMessage");
+
+        if (reason === "permanent") {
+            badge.textContent = "PERMANENTLY BLOCKED";
+            badge.className = "mode-badge mode-permanent";
+            message.innerHTML = `You've permanently blocked <strong>${domain}</strong>.<br>To unblock it, open MindfulBrowse settings.`;
+        } else {
+            badge.textContent = "FOCUS MODE ACTIVE";
+            badge.className = "mode-badge mode-focus";
+            message.innerHTML = `Focus Mode is ON and <strong>${domain}</strong> is on your block list.<br>Turn off Focus Mode to access it.`;
+        }
+
+        // Improved Go Back logic
+        document.getElementById("goBackBtn").addEventListener("click", () => {
+            // Check if there is history to go back to
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                // If it's a new tab, close it
+                window.close();
+            }
+        });
+    </script>
+</body>
+
+</html>

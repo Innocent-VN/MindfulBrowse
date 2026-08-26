@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MindfulBrowse</title>
+    <link rel="stylesheet" href="popup.css" />
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Header -->
+        <header>
+            <h1>🌿 MindfulBrowse</h1>
+            <p class="tagline">Browse with intention</p>
+        </header>
+
+        <!-- Streak Section -->
+        <section class="card streak-card">
+            <div class="streak-display">
+                <span class="streak-number" id="streakCount">—</span>
+                <span class="streak-label" id="streakLabel">day streak 🔥</span>
+            </div>
+            <p class="streak-status" id="streakStatus"></p>
+        </section>
+
+        <!-- Mood Quick Check-In -->
+        <section class="card">
+            <h2 class="section-title" id="moodTitle">Mood Check-In</h2>
+            <p class="section-desc" id="moodDesc">How are you feeling right now?</p>
+            <div class="mood-quick" id="moodQuick">
+                <button class="mood-quick-btn" data-score="1">😞</button>
+                <button class="mood-quick-btn" data-score="2">😕</button>
+                <button class="mood-quick-btn" data-score="3">😐</button>
+                <button class="mood-quick-btn" data-score="4">🙂</button>
+                <button class="mood-quick-btn" data-score="5">😄</button>
+            </div>
+            <p class="save-message" id="moodMessage"></p>
+        </section>
+
+        <!-- Today's Usage Section -->
+        <section class="card">
+            <h2 class="section-title">Today's Usage</h2>
+            <ul id="usageList" class="usage-list">
+                <li class="empty-state">No data yet — start browsing!</li>
+            </ul>
+        </section>
+
+        <!-- Set Limits Section -->
+        <section class="card">
+            <h2 class="section-title">Set a Limit</h2>
+            <div class="input-row">
+                <input type="text" id="domainInput" placeholder="e.g. youtube.com" class="input-field" />
+                <input type="number" id="limitInput" placeholder="mins" class="input-field input-small" min="1" />
+                <button id="saveLimit" class="btn-primary">Save</button>
+            </div>
+            <p id="saveMessage" class="save-message"></p>
+        </section>
+
+        <!-- Current Limits Section -->
+        <section class="card">
+            <h2 class="section-title">Your Limits</h2>
+            <ul id="limitsList" class="usage-list">
+                <li class="empty-state">No limits set yet.</li>
+            </ul>
+        </section>
+
+        <!-- Focus Mode Section -->
+        <section class="card">
+            <div class="section-header">
+                <h2 class="section-title" style="margin-bottom:0">Focus Mode</h2>
+                <label class="toggle">
+                    <input type="checkbox" id="focusToggle" />
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <p class="section-desc">Block distracting sites while focus mode is on.</p>
+            <div class="input-row" style="margin-top:10px">
+                <input type="text" id="focusDomainInput" placeholder="e.g. twitter.com" class="input-field" />
+                <button id="addFocusSite" class="btn-primary">Add</button>
+            </div>
+            <ul id="focusList" class="usage-list" style="margin-top:8px">
+                <li class="empty-state">No sites added yet.</li>
+            </ul>
+        </section>
+
+        <!-- Permanent Block Section -->
+        <section class="card">
+            <h2 class="section-title">Permanently Blocked</h2>
+            <p class="section-desc">These sites are always blocked, no matter what.</p>
+            <div class="input-row" style="margin-top:10px">
+                <input type="text" id="permanentDomainInput" placeholder="e.g. reddit.com" class="input-field" />
+                <button id="addPermanentSite" class="btn-danger">Block</button>
+            </div>
+            <ul id="permanentList" class="usage-list" style="margin-top:8px">
+                <li class="empty-state">No permanently blocked sites.</li>
+            </ul>
+        </section>
+
+        <!-- Dashboard Button -->
+        <button id="openDashboard" class="btn-dashboard">📊 Open Full Dashboard</button>
+
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>
